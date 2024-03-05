@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -18,6 +19,7 @@ import com.example.projeto.service.UserService;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @RestController
 public class UserController {
@@ -63,6 +65,22 @@ public class UserController {
     public ResponseEntity<Void> deleteUser(@PathVariable Integer id) {
         service.delete(id);
         return ResponseEntity.noContent().build();
+    }
+
+    // GET /users/page - retorna uma lista paginada de usuários
+    // page: número da página (começa em 0)
+    // linesPerPage: quantidade de linhas por página
+    // orderBy: campo pelo qual a lista será ordenada
+    // direction: direção da ordenação (ASC ou DESC)
+    @GetMapping("/users/page")
+    public ResponseEntity<Page<UserDTOResposta>> getAllUsersByPage(
+            @RequestParam(value = "page", defaultValue = "0") Integer page,
+            @RequestParam(value = "linesw", defaultValue = "10") Integer linesPerPage,
+            @RequestParam(value = "orderBy", defaultValue = "nome") String orderBy,
+            @RequestParam(value = "direction", defaultValue = "ASC") String direction) {
+        Page<UserModel> list = service.findPage(page, linesPerPage, orderBy, direction);
+        Page<UserDTOResposta> listDTO = list.map(usuario -> new UserDTOResposta(usuario));
+        return ResponseEntity.status(HttpStatus.OK).body(listDTO);
     }
 
 }
