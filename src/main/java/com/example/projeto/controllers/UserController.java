@@ -16,6 +16,9 @@ import com.example.projeto.dtos.UserDTO;
 import com.example.projeto.dtos.UserDTOResposta;
 import com.example.projeto.models.UserModel;
 import com.example.projeto.service.UserService;
+
+import jakarta.validation.Valid;
+
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -29,7 +32,7 @@ public class UserController {
 
     // POST /users - cria um novo usuário
     @PostMapping("/users")
-    public ResponseEntity<UserDTOResposta> createUser(@RequestBody UserDTO user) {
+    public ResponseEntity<UserDTOResposta> createUser(@Valid @RequestBody UserDTO user) {
         UserModel model = user.transformaParaObjeto();
         model = service.insert(model);
         return ResponseEntity.status(HttpStatus.CREATED).body(UserDTOResposta.transformaEmDTO(model));
