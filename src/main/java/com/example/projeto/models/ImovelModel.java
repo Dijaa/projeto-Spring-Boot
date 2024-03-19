@@ -7,6 +7,8 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -32,6 +34,11 @@ public class ImovelModel implements Serializable {
     private Integer quartos;
 
     private Integer vagas;
+
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private UserModel user;
+    
 
     public ImovelModel(String descrição, Integer quartos, Integer vagas) {
         super();
